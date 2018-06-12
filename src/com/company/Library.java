@@ -1,5 +1,8 @@
 package com.company;
 
+import sun.plugin2.main.client.CALayerProvider;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -82,14 +85,63 @@ public class Library {
             //Uses the line above to set a due date in the future to a variable
             String dueDate = dateFormat.format(calendar.getTime());
             //tell user what their due date is
-            System.out.println( game.getTitle() + " is due on " + dueDate);
+            System.out.println(game.getTitle() + " is due on " + dueDate);
             //Set due date for this game
             game.setDueDate(dueDate);
+            //Add game to checkd out list
+            checkedOutGames.add(game);
+            //REMOVE GAME FROM LIBRARY
+            gamesLibrary.remove(game);
         }
+
+        menu.startMenu();
 
 
     }
 
+    public void checkInGame(int index) {
+
+        //Get game using index from checkedoutgames
+        Game game = checkedOutGames.get(index);
+        gamesLibrary.add(game);
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            if (dateFormat.parse(dateFormat.format(calendar.getTime())).before(dateFormat.parse(game.getDueDate()))) {
+                System.out.println("Thanks for turning your game in on time.");
+            } else {
+                System.out.println("Shame on you! You were late turning in your game :(");
+
+
+            }
+        } catch (ParseException pe) {
+            //We will leave this empty because we don't have to do anything if we catch this exception.
+        }
+        checkedOutGames.remove(game);
+        menu.startMenu();
+
+
+    }
+
+    public void listCheckedOut(String location) {
+
+        if (checkedOutGames.isEmpty()) {
+            System.out.println("There are no games currently checked out.");
+            menu.startMenu();
+        } else {
+            int index = 1;
+            for (Game game : checkedOutGames) {
+                System.out.println(index++ + ": " + game.getTitle());
+            }
+        }
+        if(location.equals("viewCheckedOut")) {
+            menu.startMenu();
+        }
+    }
+
 
 }
+
+
+
 
